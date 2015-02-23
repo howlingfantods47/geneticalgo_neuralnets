@@ -18,6 +18,11 @@
 
 #include <vector>
 
+struct Parameters{
+	const float gridSize = 100;
+	const float searchRad = 5;
+};
+
 template<class NumType> class Plant{
 	private:
 		NumType x, y;
@@ -30,9 +35,10 @@ template<class NumType> class Plant{
 
 template<class NumType> class Brain{
 	private:
-		int numInputs, numOutputs;
+		size_t numInputs, numOutputs;
+		std::vector<float> weights;
 	public:
-		void computeDecision(const vector<NumType>& inputs, vector<NumType>& outputs);
+		void computeDecision(const std::vector<NumType>& inputs, std::vector<NumType>& outputs);
 };
 
 template<class NumType> class Creature{
@@ -41,5 +47,12 @@ template<class NumType> class Creature{
 		NumType vx, vy;
 		NumType searchRadius;
 		NumType health;
+		Brain brain;
+		size_t DNAlength;
+		std::vector<bool> DNA;
+		NumType foodSensorx, foodSensory;
+		NumType mateSensorx, mateSensory;
 	public:
+		void senseSurroundings(); // will take input something from the environment
+		void 
 };
