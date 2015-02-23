@@ -13,6 +13,9 @@ C/C++, you can use any graphics lib you want. I suggest SFML since it's very lig
 * Plants - bottom of food chain - random spawning in each generation
 * Animals - eat plants to regain health
 	* Have a neural network 'brain' which controls motion
+		* Inputs - x and y food location, x and y mate location, both within search radius
+		* Outputs - x and y velocities 
+		* Fully connected to both outputs - logistic activation function for now
 	* NN encoded into chromosome - direct encoding into bitstring for now
 	* Two animals create offspring by mating if healthy enough
 	* Lose health by moving
