@@ -16,16 +16,29 @@
  * =====================================================================================
  */
 
+
+#ifndef  creature_INC
+#define  creature_INC
+
+
+
 #include <vector>
 #include <cstdlib>
+#include <SFML/System.hpp>
+
 
 template<class NumType> class Plant{
 	private:
-		NumType x, y;
+		sf::Vector2<NumType> position;
 	public:
+		/*  Plant(){ x = 0; y = 0; }
 		Plant(NumType a, NumType b){
 			x = a;
 			y = b;
+		}*/
+		void setXY(NumType a, NumType b){
+			position.x = a;
+			position.y = b;
 		}
 };
 
@@ -39,8 +52,8 @@ template<class NumType> class Brain{
 
 template<class NumType> class Creature{
 	private:
-		NumType x, y;
-		NumType vx, vy;
+		sf::Vector2<NumType> position;
+		sf::Vector2<NumType> velocity;
 		NumType searchRadius;
 		NumType health;
 		Brain<NumType> brain;
@@ -51,3 +64,8 @@ template<class NumType> class Creature{
 	public:
 		void senseSurroundings(); // will take input something from the environment
 };
+
+
+
+#endif   /* ----- #ifndef creature_INC  ----- */
+

@@ -1,10 +1,10 @@
 CC = g++
 CFLAGS = -c -O3
 DEBUGFLAGS = -c -g -O0
-LDFLAGS = 
-SRC = main.cpp
+LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+SRC = main.cpp environment.cpp
 OBJ = $(SRC:.cpp=.o)
-LIB = creature.h
+LIB = creature.h environment.h
 all : $(OBJ) $(LIB)
 	$(CC) $(LDFLAGS) $(OBJ) 
 .cpp.o : 
