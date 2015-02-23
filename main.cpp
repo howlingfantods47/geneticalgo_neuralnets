@@ -29,6 +29,10 @@ const float Parameters::searchRad = 10;
 const size_t Parameters::initNumPlants = 100;
 
 
+typedef sf::CircleShape Circle;
+typedef sf::Vector2f V2;
+
+
 int main(int argc, char* argv[]){
 	srand(time(NULL));
 	sf::RenderWindow window(sf::VideoMode(Parameters::gridSize, Parameters::gridSize), "Artificial Life Simulation");
@@ -41,6 +45,14 @@ int main(int argc, char* argv[]){
 				window.close();
 		}
 		window.clear(sf::Color::Black);
+		for(size_t i=0; i<env.numPlants(); ++i){
+			V2 tempPos;
+			env.getPlantPos(i, tempPos);
+			Circle circ(3);
+			circ.setPosition(tempPos);
+			circ.setFillColor(sf::Color::Green);
+			window.draw(circ);
+		}
 		window.display();
 	}
 	return 0;

@@ -24,7 +24,7 @@
 
 #include "creature.h"
 #include <vector>
-
+#include <SFML/System.hpp>
 
 namespace Parameters{
 	extern const float gridSize;
@@ -38,6 +38,10 @@ class Environment{
 		std::vector<Plant<float> > plants;
 		std::vector<Creature<float> > creatures;
 	public:
+		void getPlantPos(size_t i, sf::Vector2<float>& pos);
+		void getCreaturePos(size_t i, sf::Vector2<float>& pos);
+		size_t numPlants(){	return plants.size(); }
+		size_t numCreatures(){	return creatures.size(); }
 		void initialize();
 		void growPlants();
 		friend void Creature<float>::senseSurroundings();

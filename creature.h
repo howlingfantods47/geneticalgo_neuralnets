@@ -40,6 +40,10 @@ template<class NumType> class Plant{
 			position.x = a;
 			position.y = b;
 		}
+		void getXY(sf::Vector2<NumType>& pos){
+			pos.x = position.x;
+			pos.y = position.y;
+		}
 };
 
 template<class NumType> class Brain{
@@ -59,10 +63,19 @@ template<class NumType> class Creature{
 		Brain<NumType> brain;
 		size_t DNAlength;
 		std::vector<bool> DNA;
-		NumType foodSensorx, foodSensory;
-		NumType mateSensorx, mateSensory;
+		sf::Vector2<NumType> foodSensor;
+		sf::Vector2<NumType> mateSensor;
 	public:
 		void senseSurroundings(); // will take input something from the environment
+		void setXY(NumType a, NumType b){
+			position.x = a;
+			position.y = b;
+		}
+		void getXY(sf::Vector2<NumType>& pos){
+			pos.x = position.x;
+			pos.y = position.y;
+		}
+
 };
 
 
