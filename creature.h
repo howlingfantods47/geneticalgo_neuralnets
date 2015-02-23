@@ -8,7 +8,7 @@
  *        Version:  1.0
  *        Created:  02/23/2015 01:59:37 AM
  *       Revision:  none
- *       Compiler:  gcc
+ *       Compiler:  g++
  *
  *         Author:  Neel Shah (), neelshah.sa@gmail.com
  *   Organization:  
@@ -17,11 +17,7 @@
  */
 
 #include <vector>
-
-struct Parameters{
-	const float gridSize = 100;
-	const float searchRad = 5;
-};
+#include <cstdlib>
 
 template<class NumType> class Plant{
 	private:
@@ -47,12 +43,11 @@ template<class NumType> class Creature{
 		NumType vx, vy;
 		NumType searchRadius;
 		NumType health;
-		Brain brain;
+		Brain<NumType> brain;
 		size_t DNAlength;
 		std::vector<bool> DNA;
 		NumType foodSensorx, foodSensory;
 		NumType mateSensorx, mateSensory;
 	public:
 		void senseSurroundings(); // will take input something from the environment
-		void 
 };
