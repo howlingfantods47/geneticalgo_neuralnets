@@ -32,6 +32,7 @@ namespace Parameters{
 	extern const size_t NumPlants;
 	extern const size_t InitCreatures;
 	extern const float maxHealth;
+	extern const float timeStamp;
 };
 
 
@@ -53,6 +54,7 @@ class Environment{
 		size_t numCreatures(){	return creatures.size(); }
 		void initialize();
 		void growPlants();
+		void updateCreatures();
 		friend void Creature<float>::senseSurroundings();
 };
 

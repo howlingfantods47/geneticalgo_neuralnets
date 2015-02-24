@@ -43,6 +43,10 @@ template<class NumType> class Plant{
 			position.x = a;
 			position.y = b;
 		}
+		void setXY(const sf::Vector2<NumType>& pos){
+			position.x = pos.x;
+			position.y = pos.y;
+		}
 		void getXY(sf::Vector2<NumType>& pos){
 			pos.x = position.x;
 			pos.y = position.y;
@@ -77,6 +81,10 @@ template<class NumType> class Creature{
 		void setXY(NumType a, NumType b){
 			position.x = a;
 			position.y = b;
+		}
+		void setXY(const sf::Vector2<NumType>& pos){
+			position.x = pos.x;
+			position.y = pos.y;
 		}
 		void getXY(sf::Vector2<NumType>& pos){
 			pos.x = position.x;

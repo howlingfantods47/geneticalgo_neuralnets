@@ -24,11 +24,12 @@
 #include <ctime>
 
 
-const float Parameters::gridSize = 1000;
+const float Parameters::gridSize = 500;
 const float Parameters::searchRad = 10;
 const size_t Parameters::NumPlants = 100;
 const size_t Parameters::InitCreatures = 50;
 const float Parameters::maxHealth = 200;
+const float Parameters::timeStamp = 1;
 
 typedef sf::CircleShape Circle;
 typedef sf::Vector2f V2;
@@ -54,7 +55,7 @@ void drawCreatures(Environment& env, sf::RenderWindow& window){
 		circ.setPosition(tempPos);
 		circ.setFillColor(sf::Color::Blue);
 		angle = 180.0/M_PI*atan(tempVel.y/tempVel.x);
-		angle = angle>=0 ? angle : (angle+360);
+		angle = (angle>=0) ? angle : (angle+360);
 		circ.setRotation(angle);
 		window.draw(circ);
 	}
@@ -75,7 +76,7 @@ int main(int argc, char* argv[]){
 		window.clear(sf::Color::Black);
 		drawPlants(env, window);
 		drawCreatures(env, window);
-		//env.update();
+		env.updateCreatures();
 		window.display();
 	}
 	return 0;

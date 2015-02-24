@@ -19,7 +19,7 @@
 #include "environment.h"
 #include <cstdlib>
 #include <ctime>
-#include <stdexcept>
+//#include <stdexcept>
 #include <cmath>
 #include <SFML/System.hpp>
 
@@ -50,20 +50,14 @@ void Environment::initialize(){
 
 }
 
-
-/*void Environment::getPlantPos(size_t i, sf::Vector2<float>& pos){
-	//if(i >= plants.size())	throw std::invalid_argument("index out of bounds");
-	plants[i].getXY(pos);
+void Environment::updateCreatures(){
+	sf::Vector2f newPos, vel;
+	for(size_t i=0; i<creatures.size(); ++i){
+		creatures[i].getXY(newPos);
+		creatures[i].getvXY(vel);
+		newPos += vel*Parameters::timeStamp;
+		newPos.x = (newPos.x>=0) ? fmod(newPos.x, Parameters::gridSize) : (Parameters::gridSize + newPos.x) ;
+		newPos.y = (newPos.y>=0) ? fmod(newPos.y, Parameters::gridSize) : (Parameters::gridSize + newPos.y) ;
+		creatures[i].setXY(newPos);
+	}
 }
-
-
-void Environment::getCreaturePos(size_t i, sf::Vector2<float>& pos){
-	//if(i >= plants.size())	throw std::invalid_argument("index out of bounds");
-	creatures[i].getXY(pos);
-}
-
-void Environment::getCreatureVel(size_t i, sf::Vector2<float>& vel){
-	//if(i >= plants.size())	throw std::invalid_argument("index out of bounds");
-	creatures[i].getvXY(vel);
-}
-*/
