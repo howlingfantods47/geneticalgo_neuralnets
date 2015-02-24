@@ -26,11 +26,39 @@
 
 const float Parameters::gridSize = 1000;
 const float Parameters::searchRad = 10;
-const size_t Parameters::initNumPlants = 100;
-
+const size_t Parameters::NumPlants = 100;
+const size_t Parameters::InitCreatures = 50;
+const float Parameters::maxHealth = 200;
 
 typedef sf::CircleShape Circle;
 typedef sf::Vector2f V2;
+
+void drawPlants(Environment& env, sf::RenderWindow& window){
+	for(size_t i=0; i<env.numPlants(); ++i){
+		V2 tempPos;
+		env.getPlantPos(i, tempPos);
+		Circle circ(3);
+		circ.setPosition(tempPos);
+		circ.setFillColor(sf::Color::Green);
+		window.draw(circ);
+	}
+}
+
+void drawCreatures(Environment& env, sf::RenderWindow& window){
+	for(size_t i=0; i<env.numCreatures(); ++i){
+		float angle;
+		V2 tempPos, tempVel;
+		env.getCreaturePos(i, tempPos);
+		env.getCreatureVel(i, tempVel);
+		Circle circ(6,3);
+		circ.setPosition(tempPos);
+		circ.setFillColor(sf::Color::Blue);
+		angle = 180.0/M_PI*atan(tempVel.y/tempVel.x);
+		angle = angle>=0 ? angle : (angle+360);
+		circ.setRotation(angle);
+		window.draw(circ);
+	}
+}
 
 
 int main(int argc, char* argv[]){
@@ -45,14 +73,9 @@ int main(int argc, char* argv[]){
 				window.close();
 		}
 		window.clear(sf::Color::Black);
-		for(size_t i=0; i<env.numPlants(); ++i){
-			V2 tempPos;
-			env.getPlantPos(i, tempPos);
-			Circle circ(3);
-			circ.setPosition(tempPos);
-			circ.setFillColor(sf::Color::Green);
-			window.draw(circ);
-		}
+		drawPlants(env, window);
+		drawCreatures(env, window);
+		//env.update();
 		window.display();
 	}
 	return 0;

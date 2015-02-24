@@ -24,7 +24,10 @@
 
 #include <vector>
 #include <cstdlib>
+#include <cmath>
+
 #include <SFML/System.hpp>
+
 
 
 template<class NumType> class Plant{
@@ -49,7 +52,11 @@ template<class NumType> class Plant{
 template<class NumType> class Brain{
 	private:
 		size_t numInputs, numOutputs;
-		std::vector<float> weights;
+		std::vector< std::vector<float> > weights;
+
+		float activationFunction(float score){
+			return 1.0/(1.0+exp(-score));
+		}
 	public:
 		void computeDecision(const std::vector<NumType>& inputs, std::vector<NumType>& outputs);
 };
@@ -74,6 +81,14 @@ template<class NumType> class Creature{
 		void getXY(sf::Vector2<NumType>& pos){
 			pos.x = position.x;
 			pos.y = position.y;
+		}
+		void setvXY(NumType a, NumType b){
+			velocity.x = a;
+			velocity.y = b;
+		}
+		void getvXY(sf::Vector2<NumType>& vel){
+			vel.x = velocity.x;
+			vel.y = velocity.y;
 		}
 
 };

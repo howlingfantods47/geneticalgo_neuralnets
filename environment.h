@@ -29,7 +29,9 @@
 namespace Parameters{
 	extern const float gridSize;
 	extern const float searchRad;
-	extern const size_t initNumPlants;
+	extern const size_t NumPlants;
+	extern const size_t InitCreatures;
+	extern const float maxHealth;
 };
 
 
@@ -38,8 +40,15 @@ class Environment{
 		std::vector<Plant<float> > plants;
 		std::vector<Creature<float> > creatures;
 	public:
-		void getPlantPos(size_t i, sf::Vector2<float>& pos);
-		void getCreaturePos(size_t i, sf::Vector2<float>& pos);
+		void getPlantPos(size_t i, sf::Vector2<float>& pos){
+			plants[i].getXY(pos);
+		}
+		void getCreaturePos(size_t i, sf::Vector2<float>& pos){
+			creatures[i].getXY(pos);
+		}
+		void getCreatureVel(size_t i, sf::Vector2<float>& vel){
+			creatures[i].getvXY(vel);
+		}
 		size_t numPlants(){	return plants.size(); }
 		size_t numCreatures(){	return creatures.size(); }
 		void initialize();
