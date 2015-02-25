@@ -29,10 +29,11 @@
 namespace Parameters{
 	extern const float gridSize;
 	extern const float searchRad;
-	extern const size_t NumPlants;
-	extern const size_t InitCreatures;
+	extern const size_t numPlants;
+	extern const size_t initCreatures;
 	extern const float maxHealth;
 	extern const float timeStamp;
+	extern const float collisionRad;
 };
 
 
@@ -55,7 +56,8 @@ class Environment{
 		void initialize();
 		void growPlants();
 		void updateCreatures();
-		friend void Creature<float>::senseSurroundings();
+		void updateSensors();
+		void checkCollisions();
 };
 
 

@@ -18,8 +18,11 @@
 
 #include "creature.h"
 #include "helper.h"
+#include "environment.h"
 #include <vector>
+#include <algorithm>
 
+#include <SFML/System.hpp>
 
 
 template<class NumType> void Brain<NumType>::computeDecision(const std::vector<NumType>& inputs, std::vector<NumType>& outputs){

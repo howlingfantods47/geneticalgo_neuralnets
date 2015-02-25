@@ -21,7 +21,6 @@
 #define  creature_INC
 
 
-
 #include <vector>
 #include <cstdlib>
 #include <cmath>
@@ -69,15 +68,14 @@ template<class NumType> class Creature{
 	private:
 		sf::Vector2<NumType> position;
 		sf::Vector2<NumType> velocity;
-		NumType searchRadius;
 		NumType health;
+		NumType searchRadius;
 		Brain<NumType> brain;
 		size_t DNAlength;
 		std::vector<bool> DNA;
 		sf::Vector2<NumType> foodSensor;
 		sf::Vector2<NumType> mateSensor;
 	public:
-		void senseSurroundings(); // will take input something from the environment
 		void setXY(NumType a, NumType b){
 			position.x = a;
 			position.y = b;
@@ -98,6 +96,24 @@ template<class NumType> class Creature{
 			vel.x = velocity.x;
 			vel.y = velocity.y;
 		}
+		void setFoodSensor(NumType a, NumType b){
+			foodSensor.x = a;
+			foodSensor.y = b;
+		}
+		void setFoodSensor(const sf::Vector2<NumType>& food){
+			foodSensor.x = food.x;
+			foodSensor.y = food.y;
+		}
+		void setMateSensor(NumType a, NumType b){
+			mateSensor.x = a;
+			mateSensor.y = b;
+		}
+		void setMateSensor(const sf::Vector2<NumType>& mate){
+			mateSensor.x = mate.x;
+			mateSensor.y = mate.y;
+		}
+
+		void setHealth(NumType h){	health = h; }
 
 };
 

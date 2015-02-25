@@ -24,12 +24,15 @@
 #include <ctime>
 
 
-const float Parameters::gridSize = 500;
-const float Parameters::searchRad = 10;
-const size_t Parameters::NumPlants = 100;
-const size_t Parameters::InitCreatures = 50;
-const float Parameters::maxHealth = 200;
-const float Parameters::timeStamp = 1;
+
+namespace Parameters{
+	const float gridSize = 500;
+	const size_t numPlants = 100;
+	const size_t initCreatures = 50;
+	const float maxHealth = 200;
+	const float timeStamp = 1;
+	const float collisionRad = 1;
+};
 
 typedef sf::CircleShape Circle;
 typedef sf::Vector2f V2;
