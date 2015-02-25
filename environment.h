@@ -34,6 +34,8 @@ namespace Parameters{
 	extern const float maxHealth;
 	extern const float timeStamp;
 	extern const float collisionRad;
+	extern const float healthLossRate;
+	extern const float foodHealthGain;
 };
 
 
@@ -54,7 +56,7 @@ class Environment{
 		size_t numPlants(){	return plants.size(); }
 		size_t numCreatures(){	return creatures.size(); }
 		void initialize();
-		void growPlants();
+		//void growPlants();	//incorporated into checkCollisions()
 		void updateCreatures();
 		void updateSensors();
 		void checkCollisions();

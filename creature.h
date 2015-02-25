@@ -32,6 +32,7 @@
 template<class NumType> class Plant{
 	private:
 		sf::Vector2<NumType> position;
+		bool flagEdible;
 	public:
 		/*  Plant(){ x = 0; y = 0; }
 		Plant(NumType a, NumType b){
@@ -50,6 +51,8 @@ template<class NumType> class Plant{
 			pos.x = position.x;
 			pos.y = position.y;
 		}
+		void setFlagEdible(bool flag){	flagEdible = flag; }
+		bool getFlagEdible(){	return flagEdible; }
 };
 
 template<class NumType> class Brain{
@@ -75,6 +78,10 @@ template<class NumType> class Creature{
 		std::vector<bool> DNA;
 		sf::Vector2<NumType> foodSensor;
 		sf::Vector2<NumType> mateSensor;
+		size_t idFoodSensor;
+		size_t idMateSensor;
+		float distFood;
+		float distMate;
 	public:
 		void setXY(NumType a, NumType b){
 			position.x = a;
@@ -112,8 +119,16 @@ template<class NumType> class Creature{
 			mateSensor.x = mate.x;
 			mateSensor.y = mate.y;
 		}
-
+		void setIDFoodSensor(size_t id){	idFoodSensor = id;	}
+		void setIDMateSensor(size_t id){	idMateSensor = id;	}
+		void setDistFood(float d){	distFood = d;	}
+		void setDistMate(float d){	distMate = d;	}
 		void setHealth(NumType h){	health = h; }
+		float getDistFood(){	return distFood; }
+		float getDistMate(){	return distMate; }
+		size_t getIDFood(){		return idFoodSensor; }
+		size_t getIDMate(){		return idMateSensor; }
+		NumType getHealth(){	return health; }
 
 };
 

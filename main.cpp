@@ -27,11 +27,13 @@
 
 namespace Parameters{
 	const float gridSize = 500;
-	const size_t numPlants = 100;
-	const size_t initCreatures = 50;
+	const size_t numPlants = 50;
+	const size_t initCreatures = 20;
 	const float maxHealth = 200;
 	const float timeStamp = 1;
-	const float collisionRad = 1;
+	const float collisionRad = 3;
+	const float healthLossRate = 1;
+	const float foodHealthGain = 20;
 };
 
 typedef sf::CircleShape Circle;

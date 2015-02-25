@@ -10,7 +10,7 @@ C/C++, you can use any graphics lib you want. I suggest SFML since it's very lig
 ### Basic Architecture 
 
 * Universe - Cartesian 2D toroidal plane
-* Each creature/plant has a gridID tag which helps searching for food/mates. 
+* Plants - bottom of food chain, every time one is eaten, a new one spawns randomly to replace it.
 * Animals - eat plants to regain health
 	* Have a neural network 'brain' which controls motion
 		* Inputs - nearest x and y food location, nearest x and y mate location, picks the nearest one for each.
@@ -22,7 +22,8 @@ C/C++, you can use any graphics lib you want. I suggest SFML since it's very lig
 	* Die if below a health threshold
 	* TODO (?) - predator/prey relationship encodings (has to evolve somehow)
 
-* Optimize search later - brute force search over entire environment for now :/
+* TODO - Optimize search later - brute force search over entire environment for now :/
 	* Each creature/plant has a gridID tag which helps searching for food/mates. 
 	* Each grid has plant/mate lookup tables maintained.
+	* Check out ANN - Approximate Nearest Neighbors (http://www.cs.umd.edu/~mount/ANN/), binary space partitioning, etc. 
 
