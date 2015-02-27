@@ -33,28 +33,28 @@ typedef sf::Vector2f V2;
 
 
 void Environment::initialize(){
-	plants.resize(Parameters::numPlants);
+	this->plants.resize(Parameters::numPlants);
 	float tx, ty, norm;
 	float size = Parameters::gridSize;
-	for(size_t i=0; i<plants.size(); ++i){
+	for(size_t i=0; i<this->plants.size(); ++i){
 		tx = size*rand()/(double)RAND_MAX;
 		ty = size*rand()/(double)RAND_MAX;
-		plants[i].setXY(tx, ty);
-		plants[i].setFlagEdible(true);
+		this->plants[i].setXY(tx, ty);
+		this->plants[i].setFlagEdible(true);
 	}
-	creatures.resize(Parameters::initCreatures);
-	for(size_t i=0; i<creatures.size(); ++i){
+	this->creatures.resize(Parameters::initCreatures);
+	for(size_t i=0; i<this->creatures.size(); ++i){
 		tx = size*rand()/(double)RAND_MAX;
 		ty = size*rand()/(double)RAND_MAX;
-		creatures[i].setXY(tx, ty);
-		creatures[i].setHealth(Parameters::maxHealth);
+		this->creatures[i].setXY(tx, ty);
+		this->creatures[i].setHealth(Parameters::maxHealth);
 		tx = 2.0*rand()/(double)RAND_MAX - 1;
 		ty = 2.0*rand()/(double)RAND_MAX - 1;
 		norm = sqrt(pow(tx,2) + pow(ty,2));
 		tx /= norm;
 		ty /= norm;
-		creatures[i].setvXY(tx, ty);
-		creatures[i].initBrain();
+		this->creatures[i].setvXY(tx, ty);
+		this->creatures[i].initBrain();
 	}
 }
 
@@ -102,21 +102,21 @@ void Environment::update(){
 void Environment::updateCreatures(){
 	sf::Vector2f newPos, vel;
 	std::vector<size_t> deadCreatures;
-	for(size_t i=0; i<creatures.size(); ++i){
-		creatures[i].getXY(newPos);
-		creatures[i].getvXY(vel);
+	for(size_t i=0; i<this->creatures.size(); ++i){
+		this->creatures[i].getXY(newPos);
+		this->creatures[i].getvXY(vel);
 		newPos += vel*Parameters::timeStamp;
 		newPos.x = (newPos.x>=0) ? fmod(newPos.x, Parameters::gridSize) : (Parameters::gridSize + newPos.x) ;
 		newPos.y = (newPos.y>=0) ? fmod(newPos.y, Parameters::gridSize) : (Parameters::gridSize + newPos.y) ;
-		creatures[i].setXY(newPos);
-		if(creatures[i].getHealth() <= Parameters::healthLossRate)	deadCreatures.push_back(i); 
-		creatures[i].setHealth(creatures[i].getHealth() - Parameters::healthLossRate);
+		this->creatures[i].setXY(newPos);
+		if(this->creatures[i].getHealth() <= Parameters::healthLossRate)	deadCreatures.push_back(i); 
+		this->creatures[i].setHealth(creatures[i].getHealth() - Parameters::healthLossRate);
 	}
 	// have to delete in reverse order to avoid shifting indices at each step. Also, I know indices are added 
 	// in ascending order, so no need of sorting.
 	std::reverse(deadCreatures.begin(), deadCreatures.end());
 	for(size_t i=0; i<deadCreatures.size(); ++i){
-		creatures.erase(creatures.begin() + deadCreatures[i]);
+		this->creatures.erase(creatures.begin() + deadCreatures[i]);
 	}
 }
 
@@ -124,47 +124,56 @@ void Environment::updateCreatures(){
 // Most likely approach -  Divide space into bins/grids, make lookup tables for each bin, search only locally, so on.
 // Check out ANN - Approximate Nearest Neighbors (http://www.cs.umd.edu/~mount/ANN/)
 void Environment::updateSensors(){
-	std::vector<float> distPlants;
-	std::vector<float> distCreatures;
-	distPlants.resize(plants.size());
-	distCreatures.resize(creatures.size());
-	sf::Vector2f tempPos, curPos, foodSensor, mateSensor;
-	for(size_t k=0; k<creatures.size(); ++k){
-		creatures[k].getXY(curPos);
-		for(size_t i=0; i<plants.size(); ++i){
+	sf::Vector2f tempPos, currentPos, foodSensor, mateSensor;
+	float minDistPlants, minDistCreatures;
+	float tempDist;
+	size_t idClosestPlant, idClosestCreature;
+	for(size_t k=0; k<this->creatures.size(); ++k){
+		this->creatures[k].getXY(currentPos);
+		minDistPlants = 1000000000000;
+		idClosestPlant = 0;
+		for(size_t i=0; i<this->plants.size(); ++i){
 			this->getPlantPos(i, tempPos);
-			distPlants[i] = Helper::euclideanDist(curPos, tempPos);
+			tempDist = Helper::euclideanDist(currentPos, tempPos);
+			if(tempDist < minDistPlants){
+				minDistPlants = tempDist;
+				idClosestPlant = i;
+			}
 		}
-		for(size_t i=0; i<creatures.size(); ++i){
+		minDistCreatures = 1000000000000;
+		idClosestCreature = 0;
+		for(size_t i=0; i<this->creatures.size(); ++i){
 			this->getCreaturePos(i, tempPos);
-			distCreatures[i] = Helper::euclideanDist(curPos, tempPos);
+			tempDist = Helper::euclideanDist(currentPos, tempPos);
+			if(tempDist < minDistCreatures){
+				minDistCreatures = tempDist;
+				idClosestCreature = i;
+			}
 		}
-		size_t idClosestPlant, idClosestCreature;
-		idClosestPlant = std::min_element(distPlants.begin(), distPlants.end()) - distPlants.begin();
-		idClosestCreature = std::min_element(distCreatures.begin(), distCreatures.end()) - distCreatures.begin();
 		this->getPlantPos(idClosestPlant, foodSensor);
 		this->getCreaturePos(idClosestCreature, mateSensor);
-		creatures[k].setIDFoodSensor(idClosestPlant);
-		creatures[k].setDistFood(distPlants[idClosestPlant]);
-		creatures[k].setFoodSensor(foodSensor);
-		creatures[k].setIDMateSensor(idClosestCreature);
-		creatures[k].setDistMate(distCreatures[idClosestCreature]);
-		creatures[k].setMateSensor(mateSensor);
+		this->creatures[k].setIDFoodSensor(idClosestPlant);
+		this->creatures[k].setDistFood(minDistPlants);
+		this->creatures[k].setFoodSensor(foodSensor);
+		this->creatures[k].setIDMateSensor(idClosestCreature);
+		this->creatures[k].setDistMate(minDistCreatures);
+		this->creatures[k].setMateSensor(mateSensor);
 	}
 }
 
 
 void Environment::checkCollisions(){
+	// food collisions
 	std::vector<size_t> deadPlants;
 	size_t tempID;
-	for(size_t i=0; i<creatures.size(); ++i){
-		if(creatures[i].getDistFood() <= Parameters::collisionRad){
-			tempID = creatures[i].getIDFood();
-			if(!(plants[tempID].getFlagEdible()))	continue;
+	for(size_t i=0; i<this->creatures.size(); ++i){
+		if(this->creatures[i].getDistFood() <= Parameters::collisionRad){
+			tempID = this->creatures[i].getIDFood();
+			if(!(this->plants[tempID].getFlagEdible()))	continue;
 			// eat the food, store plant id for removal at end, flip edible flag
-			creatures[i].setHealth(creatures[i].getHealth() + Parameters::foodHealthGain);
+			this->creatures[i].setHealth(this->creatures[i].getHealth() + Parameters::foodHealthGain);
 			deadPlants.push_back(tempID);
-			plants[tempID].setFlagEdible(false);
+			this->plants[tempID].setFlagEdible(false);
 		}
 	}
 	// isntead of deleting and then growing, just replace dead plants with new random positions.
@@ -173,15 +182,20 @@ void Environment::checkCollisions(){
 	for(size_t i=0; i<deadPlants.size(); ++i){
 		tx = size*rand()/(double)RAND_MAX;
 		ty = size*rand()/(double)RAND_MAX;
-		plants[deadPlants[i]].setXY(tx, ty);
-		plants[deadPlants[i]].setFlagEdible(true);
+		this->plants[deadPlants[i]].setXY(tx, ty);
+		this->plants[deadPlants[i]].setFlagEdible(true);
 	}
+
+
+	// mate collisions
+	// maybe make mate radius more than food radius, since it is less likelier to mate.
+
 }
 
 
 void Environment::processBrains(){
 	std::vector<float> inputs, outputs;
-	for(size_t i=0; i<creatures.size(); ++i){
-		creatures[i].compute(inputs, outputs);
+	for(size_t i=0; i<this->creatures.size(); ++i){
+			this->creatures[i].compute(inputs, outputs);
 	}
 }

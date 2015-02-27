@@ -33,7 +33,7 @@ namespace Parameters{
 	const float timeStamp = 1;
 	const float collisionRad = 3;
 	const float healthLossRate = 1;
-	const float foodHealthGain = 20;
+	const float foodHealthGain = 50;
 };
 
 typedef sf::CircleShape Circle;

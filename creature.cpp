@@ -27,8 +27,8 @@
 
 void Brain::computeDecision(std::vector<float>& inputs, std::vector<float>& outputs){
 	outputs.resize(numOutputs);
-	for(size_t i=0 ; i<numOutputs; ++i){
-		outputs[i] = activationFunction(Helper::dotProduct(inputs, weights[i]));
+	for(size_t i=0 ; i<this->numOutputs; ++i){
+		outputs[i] = activationFunction(Helper::dotProduct(inputs, this->weights[i])+this->biases[i]);
 	}
 }
 
@@ -38,17 +38,17 @@ float Brain::activationFunction(float score){
 }
 
 void Brain::randInitWeights(){
-	numInputs = 4;
-	numOutputs = 2;
-	weights.resize(numOutputs);
-	biases.resize(numOutputs);
-	for(size_t i=0; i<numOutputs; ++i){
-		weights[i].resize(numInputs);
+	this->numInputs = 4;
+	this->numOutputs = 2;
+	this->weights.resize(this->numOutputs);
+	this->biases.resize(this->numOutputs);
+	for(size_t i=0; i<this->numOutputs; ++i){
+		this->weights[i].resize(this->numInputs);
 	}
-	for(size_t i=0; i<numOutputs; ++i){
-		for(size_t j=0; j<numInputs; ++j){
-			weights[i][j] = 2.0*rand()/(double)RAND_MAX - 1;
+	for(size_t i=0; i<this->numOutputs; ++i){
+		for(size_t j=0; j<this->numInputs; ++j){
+			this->weights[i][j] = 2.0*rand()/(double)RAND_MAX - 1;
 		}
-		biases[i] = 2.0*rand()/(double)RAND_MAX - 1;
+		this->biases[i] = 2.0*rand()/(double)RAND_MAX - 1;
 	}
 }
