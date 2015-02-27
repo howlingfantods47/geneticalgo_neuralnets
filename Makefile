@@ -8,7 +8,7 @@ LIB = creature.h environment.h helper.h
 all : $(OBJ) $(LIB)
 	$(CC) $(LDFLAGS) $(OBJ) 
 .cpp.o : 
-	$(CC) $(CFLAGS) $(LDFLAGS) $< 
+	$(CC) $(DEBUGFLAGS) $(LDFLAGS) $< 
 clean :
 	rm -f *.o a.out 
 

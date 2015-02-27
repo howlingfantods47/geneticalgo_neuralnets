@@ -65,6 +65,7 @@ class Environment{
 		void updateSensors();
 		void processBrains();
 		void checkCollisions();
+		void sexyTimes(Creature<float> father, Creature<float>& mother, Creature<float>& child);
 };
 
 

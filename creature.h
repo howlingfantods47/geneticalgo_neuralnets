@@ -65,6 +65,11 @@ class Brain{
 	public:
 		void computeDecision(std::vector<float>& inputs, std::vector<float>& outputs);
 		void randInitWeights();
+		void getWeights(std::vector<std::vector<float> >& w, std::vector<float>& b){
+			w = this->weights;
+			b = this->biases;
+		}
+		void createBrain(std::vector<std::vector<float> >& weights, std::vector<float>& biases);
 };
 
 template<class NumType> class Creature{
@@ -74,14 +79,16 @@ template<class NumType> class Creature{
 		NumType health;
 		//NumType searchRadius;
 		Brain brain;
-		size_t DNAlength;
-		std::vector<bool> DNA;
+		//size_t DNAlength;
+		//std::vector<bool> DNA;
 		sf::Vector2<NumType> foodSensor;
 		sf::Vector2<NumType> mateSensor;
 		size_t idFoodSensor;
 		size_t idMateSensor;
 		float distFood;
 		float distMate;
+		bool flagHorny;
+		size_t generationID;
 	public:
 		void setXY(NumType a, NumType b){
 			position.x = a;
@@ -98,6 +105,10 @@ template<class NumType> class Creature{
 		void setvXY(NumType a, NumType b){
 			velocity.x = a;
 			velocity.y = b;
+		}
+		void setvXY(const sf::Vector2<NumType>& vel){
+			velocity.x = vel.x;
+			velocity.y = vel.y;
 		}
 		void getvXY(sf::Vector2<NumType>& vel){
 			vel.x = velocity.x;
@@ -119,6 +130,10 @@ template<class NumType> class Creature{
 			mateSensor.x = mate.x;
 			mateSensor.y = mate.y;
 		}
+		NumType getFoodSensorX(){	return foodSensor.x;	}
+		NumType getFoodSensorY(){	return foodSensor.y;	}
+		NumType getMateSensorX(){	return mateSensor.x;	}
+		NumType getMateSensorY(){	return mateSensor.y;	}
 		void setIDFoodSensor(size_t id){	idFoodSensor = id;	}
 		void setIDMateSensor(size_t id){	idMateSensor = id;	}
 		void setDistFood(float d){	distFood = d;	}
@@ -129,10 +144,25 @@ template<class NumType> class Creature{
 		size_t getIDFood(){		return idFoodSensor; }
 		size_t getIDMate(){		return idMateSensor; }
 		NumType getHealth(){	return health; }
+		void setFlagHorny(bool flag){	flagHorny = flag; }
+		bool getFlagHorny(){	return flagHorny; }
+		void setGeneration(size_t gen){	generationID = gen;	}
+		size_t getGeneration(){	return generationID;	}
+
+		void setBrainWeights(std::vector<std::vector<float> >& weights, std::vector<float>& biases){
+			brain.createBrain(weights, biases);
+		}
+
+		void getBrainWeights(std::vector<std::vector<float> >& weights, std::vector<float>& biases){
+			brain.getWeights(weights, biases);
+		}
+
 		void compute(std::vector<float>& inputs, std::vector<float>& outputs){
 			brain.computeDecision(inputs, outputs);
 		}
+
 		void initBrain(){	brain.randInitWeights();	}
+
 };
 
 

@@ -28,9 +28,12 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
+
 typedef sf::CircleShape Circle;
 typedef sf::Vector2f V2;
 
+using namespace std;
 
 void Environment::initialize(){
 	this->plants.resize(Parameters::numPlants);
@@ -55,6 +58,8 @@ void Environment::initialize(){
 		ty /= norm;
 		this->creatures[i].setvXY(tx, ty);
 		this->creatures[i].initBrain();
+		this->creatures[i].setFlagHorny(true);
+		this->creatures[i].setGeneration(0);
 	}
 }
 
@@ -77,12 +82,16 @@ void Environment::drawPlants(sf::RenderWindow& window){
 void Environment::drawCreatures(sf::RenderWindow& window){
 	for(size_t i=0; i<this->numCreatures(); ++i){
 		float angle;
+		size_t alpha;
 		V2 tempPos, tempVel;
 		this->getCreaturePos(i, tempPos);
 		this->getCreatureVel(i, tempVel);
 		Circle circ(6,3);
 		circ.setPosition(tempPos);
-		circ.setFillColor(sf::Color::Blue);
+		alpha = this->creatures[i].getGeneration()*50+50;
+		alpha = (alpha<256) ? alpha : 255;
+		sf::Color col(0,0,255,alpha);
+		circ.setFillColor(col);
 		angle = 180.0/M_PI*atan(tempVel.y/tempVel.x);
 		angle = (angle>=0) ? angle : (angle+360);
 		circ.setRotation(angle);
@@ -143,6 +152,7 @@ void Environment::updateSensors(){
 		minDistCreatures = 1000000000000;
 		idClosestCreature = 0;
 		for(size_t i=0; i<this->creatures.size(); ++i){
+			if(i == k)	continue;
 			this->getCreaturePos(i, tempPos);
 			tempDist = Helper::euclideanDist(currentPos, tempPos);
 			if(tempDist < minDistCreatures){
@@ -165,15 +175,15 @@ void Environment::updateSensors(){
 void Environment::checkCollisions(){
 	// food collisions
 	std::vector<size_t> deadPlants;
-	size_t tempID;
+	size_t foodID;
 	for(size_t i=0; i<this->creatures.size(); ++i){
 		if(this->creatures[i].getDistFood() <= Parameters::collisionRad){
-			tempID = this->creatures[i].getIDFood();
-			if(!(this->plants[tempID].getFlagEdible()))	continue;
+			foodID = this->creatures[i].getIDFood();
+			if(!(this->plants[foodID].getFlagEdible()))	continue;
 			// eat the food, store plant id for removal at end, flip edible flag
 			this->creatures[i].setHealth(this->creatures[i].getHealth() + Parameters::foodHealthGain);
-			deadPlants.push_back(tempID);
-			this->plants[tempID].setFlagEdible(false);
+			deadPlants.push_back(foodID);
+			this->plants[foodID].setFlagEdible(false);
 		}
 	}
 	// isntead of deleting and then growing, just replace dead plants with new random positions.
@@ -188,14 +198,80 @@ void Environment::checkCollisions(){
 
 
 	// mate collisions
-	// maybe make mate radius more than food radius, since it is less likelier to mate.
-
+	// maybe make mate radius more than food radius later, since it is less likelier to mate.
+	size_t mateID;
+	std::vector<Creature<float> > offspring;
+	for(size_t i=0; i<this->creatures.size(); ++i){
+		if(this->creatures[i].getDistMate() <= Parameters::collisionRad){
+			if(!(this->creatures[i].getFlagHorny()))	continue;
+			mateID = this->creatures[i].getIDMate();
+			if(!(this->creatures[mateID].getFlagHorny()))	continue;
+			// mate, create child at random position with random velocity with genes combined from parents
+			// TODO have cost of sex and health check before mating
+			Creature<float> child;
+			this->sexyTimes(this->creatures[i], this->creatures[mateID], child);
+			this->creatures[i].setFlagHorny(false);
+			this->creatures[mateID].setFlagHorny(false);
+			offspring.push_back(child);
+		}
+	}
+	this->creatures.insert(this->creatures.end(), offspring.begin(), offspring.end());
 }
 
 
+
+// make this more general later for better brain/NN topologies.
 void Environment::processBrains(){
 	std::vector<float> inputs, outputs;
+	inputs.resize(4);
+	outputs.resize(2);
+	float norm;
+	V2 pos;
 	for(size_t i=0; i<this->creatures.size(); ++i){
-			this->creatures[i].compute(inputs, outputs);
+		this->creatures[i].getXY(pos);
+		inputs[0] = this->creatures[i].getFoodSensorX() - pos.x;
+		inputs[1] = this->creatures[i].getFoodSensorY() - pos.y;
+		inputs[2] = this->creatures[i].getMateSensorX() - pos.x;
+		inputs[3] = this->creatures[i].getMateSensorY() - pos.y;
+		this->creatures[i].compute(inputs, outputs);
+		norm = sqrt(pow(outputs[0],2) + pow(outputs[1],2));
+		outputs[0] /= norm;
+		outputs[1] /= norm;
+		this->creatures[i].setvXY(outputs[0], outputs[1]);
 	}
+}
+// Current algorithm - not making explicit DNA strand. Just pick one of parents' weights randomly for each edge.
+void Environment::sexyTimes(Creature<float> father, Creature<float>& mother, Creature<float>& child){
+	float size = Parameters::gridSize;
+	float tx, ty, norm;
+	tx = size*rand()/(double)RAND_MAX;
+	ty = size*rand()/(double)RAND_MAX;
+	child.setXY(tx, ty);
+	child.setHealth(Parameters::maxHealth);
+	tx = 2.0*rand()/(double)RAND_MAX - 1;
+	ty = 2.0*rand()/(double)RAND_MAX - 1;
+	norm = sqrt(pow(tx,2) + pow(ty,2));
+	tx /= norm;
+	ty /= norm;
+	child.setvXY(tx, ty);
+	child.setFlagHorny(true);
+	child.setGeneration(1+std::max(father.getGeneration(), mother.getGeneration()));
+
+	// mating starts below
+	std::vector<std::vector<float> > weights1, weights2, childWeights;
+	std::vector<float> bias1, bias2, childBiases;
+	father.getBrainWeights(weights1, bias1);
+	mother.getBrainWeights(weights2, bias2);
+	childWeights.resize(weights1.size());
+	childBiases.resize(bias1.size());
+	for(size_t i=0; i<childWeights.size(); ++i){
+		childWeights.resize(weights1[0].size());
+	}
+	for(size_t i=0; i<childWeights.size(); ++i){
+		for(size_t j=0; j<childWeights[i].size(); ++j){
+			childWeights[i][j] = (rand()%2==0) ? weights1[i][j] : weights2[i][j];
+		}
+		childBiases[i] = (rand()%2==0) ? bias1[i] : bias2[i];
+	}
+	child.setBrainWeights(childWeights, childBiases);
 }

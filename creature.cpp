@@ -32,6 +32,12 @@ void Brain::computeDecision(std::vector<float>& inputs, std::vector<float>& outp
 	}
 }
 
+void Brain::createBrain(std::vector<std::vector<float> >& w, std::vector<float>& b){
+	this->numInputs = w[0].size();
+	this->numOutputs = w.size();
+	this->weights = w;
+	this->biases = b;
+}
 
 float Brain::activationFunction(float score){
 	return 1.0/(1.0+exp(-score));
@@ -52,3 +58,5 @@ void Brain::randInitWeights(){
 		this->biases[i] = 2.0*rand()/(double)RAND_MAX - 1;
 	}
 }
+
+
