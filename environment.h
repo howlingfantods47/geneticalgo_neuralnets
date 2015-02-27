@@ -25,6 +25,7 @@
 #include "creature.h"
 #include <vector>
 #include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace Parameters{
 	extern const float gridSize;
@@ -56,9 +57,13 @@ class Environment{
 		size_t numPlants(){	return plants.size(); }
 		size_t numCreatures(){	return creatures.size(); }
 		void initialize();
-		//void growPlants();	//incorporated into checkCollisions()
+		void draw(sf::RenderWindow& window);
+		void drawPlants(sf::RenderWindow& window);
+		void drawCreatures(sf::RenderWindow& window);
+		void update();
 		void updateCreatures();
 		void updateSensors();
+		void processBrains();
 		void checkCollisions();
 };
 

@@ -55,16 +55,16 @@ template<class NumType> class Plant{
 		bool getFlagEdible(){	return flagEdible; }
 };
 
-template<class NumType> class Brain{
+class Brain{
 	private:
 		size_t numInputs, numOutputs;
 		std::vector< std::vector<float> > weights;
+		std::vector<float> biases;
 
-		float activationFunction(float score){
-			return 1.0/(1.0+exp(-score));
-		}
+		float activationFunction(float score);
 	public:
-		void computeDecision(const std::vector<NumType>& inputs, std::vector<NumType>& outputs);
+		void computeDecision(std::vector<float>& inputs, std::vector<float>& outputs);
+		void randInitWeights();
 };
 
 template<class NumType> class Creature{
@@ -72,8 +72,8 @@ template<class NumType> class Creature{
 		sf::Vector2<NumType> position;
 		sf::Vector2<NumType> velocity;
 		NumType health;
-		NumType searchRadius;
-		Brain<NumType> brain;
+		//NumType searchRadius;
+		Brain brain;
 		size_t DNAlength;
 		std::vector<bool> DNA;
 		sf::Vector2<NumType> foodSensor;
@@ -129,7 +129,10 @@ template<class NumType> class Creature{
 		size_t getIDFood(){		return idFoodSensor; }
 		size_t getIDMate(){		return idMateSensor; }
 		NumType getHealth(){	return health; }
-
+		void compute(std::vector<float>& inputs, std::vector<float>& outputs){
+			brain.computeDecision(inputs, outputs);
+		}
+		void initBrain(){	brain.randInitWeights();	}
 };
 
 

@@ -25,7 +25,7 @@
 #include <SFML/System.hpp>
 
 
-template<class NumType> void Brain<NumType>::computeDecision(const std::vector<NumType>& inputs, std::vector<NumType>& outputs){
+void Brain::computeDecision(std::vector<float>& inputs, std::vector<float>& outputs){
 	outputs.resize(numOutputs);
 	for(size_t i=0 ; i<numOutputs; ++i){
 		outputs[i] = activationFunction(Helper::dotProduct(inputs, weights[i]));
@@ -33,4 +33,22 @@ template<class NumType> void Brain<NumType>::computeDecision(const std::vector<N
 }
 
 
+float Brain::activationFunction(float score){
+	return 1.0/(1.0+exp(-score));
+}
 
+void Brain::randInitWeights(){
+	numInputs = 4;
+	numOutputs = 2;
+	weights.resize(numOutputs);
+	biases.resize(numOutputs);
+	for(size_t i=0; i<numOutputs; ++i){
+		weights[i].resize(numInputs);
+	}
+	for(size_t i=0; i<numOutputs; ++i){
+		for(size_t j=0; j<numInputs; ++j){
+			weights[i][j] = 2.0*rand()/(double)RAND_MAX - 1;
+		}
+		biases[i] = 2.0*rand()/(double)RAND_MAX - 1;
+	}
+}
