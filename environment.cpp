@@ -88,9 +88,9 @@ void Environment::drawCreatures(sf::RenderWindow& window){
 		this->getCreatureVel(i, tempVel);
 		Circle circ(6,3);
 		circ.setPosition(tempPos);
-		alpha = this->creatures[i].getGeneration()*50+50;
+		alpha = this->creatures[i].getGeneration()*50;
 		alpha = (alpha<256) ? alpha : 255;
-		sf::Color col(0,0,255,alpha);
+		sf::Color col(alpha,0,255);
 		circ.setFillColor(col);
 		angle = 180.0/M_PI*atan(tempVel.y/tempVel.x);
 		angle = (angle>=0) ? angle : (angle+360);
@@ -265,7 +265,7 @@ void Environment::sexyTimes(Creature<float> father, Creature<float>& mother, Cre
 	childWeights.resize(weights1.size());
 	childBiases.resize(bias1.size());
 	for(size_t i=0; i<childWeights.size(); ++i){
-		childWeights.resize(weights1[0].size());
+		childWeights[i].resize(weights1[0].size());
 	}
 	for(size_t i=0; i<childWeights.size(); ++i){
 		for(size_t j=0; j<childWeights[i].size(); ++j){
